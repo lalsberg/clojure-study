@@ -55,14 +55,14 @@
       					; (set [(do-do-alienize part numb)])))))))
 
 (defn alienize
-  [part]
+  [part, quantity]
   (if (re-find #"^left-" (:name part)) 
-  	(do-alienize part (list 1 2 3 4 5))
+  	(do-alienize part (range 1 quantity))
   	(set [part])))
 
 (defn symmetrize-body-parts
   "Expects a seq of maps that have a :name and :size"
-  [asym-body-parts]
+  [asym-body-parts, quantity]
   (loop [remaining-asym-parts asym-body-parts
          final-body-parts []]
     (if (empty? remaining-asym-parts)
@@ -70,11 +70,11 @@
       (let [[part & remaining] remaining-asym-parts]
         (recur remaining
                (into final-body-parts
-                     (alienize part)))))))
+                     (alienize part quantity)))))))
 
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]
-  (println (symmetrize-body-parts asym-hobbit-body-parts))
+  (println (symmetrize-body-parts asym-hobbit-body-parts 3))
   ; (println (do-alienize (first asym-hobbit-body-parts) (list 1 2 3 4 5)))
 )
