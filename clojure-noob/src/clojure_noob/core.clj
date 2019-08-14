@@ -27,12 +27,19 @@
   {:name (clojure.string/replace (:name part) #"^left-" "right-")
    :size (:size part)})
 
+(defn add-name-num
+  [part, numb]
+  {:name (str (:name part) "-" numb)
+     :size (:size part)})
+
 (defn do-do-alienize
-	[part, numb]
-	; ainda falta duplicar fazendo um set juntando com a parte right
-	{:name (str (:name part) "-" numb)
-	 :size (:size part)}
-	)
+  [part, numb]
+  (set
+    [
+      (add-name-num part numb)
+      (add-name-num (matching-part part) numb)
+    ]
+  ))
 
 (defn do-alienize
   [part, nums]
@@ -44,7 +51,8 @@
       		(let [[numb & rem-nums] remaining-nums]
       			(recur rem-nums 
       				(into final-alien-parts 
-      					(set [(do-do-alienize part numb)])))))))
+                (do-do-alienize part numb)))))))
+      					; (set [(do-do-alienize part numb)])))))))
 
 (defn alienize
   [part]
@@ -63,19 +71,6 @@
         (recur remaining
                (into final-body-parts
                      (alienize part)))))))
-; >>>>> OLD
-; (defn symmetrize-body-parts
-;   "Expects a seq of maps that have a :name and :size"
-;   [asym-body-parts]
-;   (loop [remaining-asym-parts asym-body-parts
-;          final-body-parts []]
-;     (if (empty? remaining-asym-parts)
-;       final-body-parts
-;       (let [[part & remaining] remaining-asym-parts]
-;         (recur remaining
-;                (into final-body-parts
-;                      (set [part (matching-part part)])))))))
-;                      ; (set [part])))))))
 
 (defn -main
   "I don't do a whole lot ... yet."
