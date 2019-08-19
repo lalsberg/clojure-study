@@ -1,7 +1,7 @@
 (ns hanoi.core
   (:gen-class))
 
-(def empty-cell {:text "  |  " :weight 0})
+(def empty-cell {:text "      |      " :weight 0})
 
 (def not-nil? (complement nil?))
 
@@ -12,23 +12,45 @@
 (def is-empty (complement has-piece))
 
 (def field 
-	[[{:text "  -  " :weight 1} empty-cell empty-cell]
-	 [{:text " --- " :weight 2} empty-cell empty-cell]
-	 [{:text "-----" :weight 3} empty-cell empty-cell]])
+	[[{:text "      -      " :weight 1} empty-cell empty-cell]
+	 [{:text "     ---     " :weight 2} empty-cell empty-cell]
+	 [{:text "    -----    " :weight 3} empty-cell empty-cell]
+	 [{:text "   -------   " :weight 4} empty-cell empty-cell]
+	 [{:text "  ---------  " :weight 5} empty-cell empty-cell]
+	 [{:text " ----------- " :weight 6} empty-cell empty-cell]
+	 [{:text "-------------" :weight 7} empty-cell empty-cell]])
 
 (def field-base-index (- (count field) 1))
 
+(defn clear-screen []
+	(print (str (char 27) "[2J")))
+
+(defn get-text
+	[cell]
+	(:text cell))
+
+(defn format-line
+	[line]
+	
+	(map get-text line)
+)
 (defn print-field
 	[field]
-	(let [s (clojure.string/join "\n" (map clojure.string/join field))] (println s)))
-
-; (defn print-field
-; 	[]
-; 	(for [line (range 0 (+ field-base-index 1))]
-; 		; (print {:text ((field line) 0)})
-; 		; (print {:text ((field line) 1)})
-; 		; (println {:text ((field line) 2)})
-; 		))
+		(dorun (map print (format-line (field 0))))
+		(println)
+		(dorun (map print (format-line (field 1))))
+		(println)
+		(dorun (map print (format-line (field 2))))
+		(println)
+		(dorun (map print (format-line (field 3))))
+		(println)
+		(dorun (map print (format-line (field 4))))
+		(println)
+		(dorun (map print (format-line (field 5))))
+		(println)
+		(dorun (map print (format-line (field 6))))
+		(println)
+		)
 
 (defn get-column
 	[field column]
@@ -58,6 +80,7 @@
 	[field origin destiny]
 	(and
 		(not-nil? (get-top field origin))
+		(not= origin destiny)
 		(or
 			(nil? (get-top field destiny))
 			(< (:weight (get-top field origin)) (:weight (get-top field destiny))))))
@@ -81,7 +104,8 @@
 	[field origin destiny]
 	(if (can-move field origin destiny)
 		(update-destiny-and-origin field origin destiny)
-		(println "cannot move")))
+		(do (println "cannot move")
+			field)))
 
 (defn has-won 
 	[field]
@@ -100,6 +124,7 @@
 			(def destiny (- (Integer. (read-line)) 1))  
 
 			(let [field (move field origin destiny)]
+				(clear-screen)
 				(print-field field)
 				(ask field (inc moves)))))
 )
@@ -107,7 +132,7 @@
 (defn -main
 	"I don't do a whole lot ... yet."
 	[& args]
-
+	(clear-screen)
 	(print-field field)
 	(ask field 0)  
 )
