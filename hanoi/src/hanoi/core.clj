@@ -14,15 +14,13 @@
 (def field 
 	[[{:text "  -  " :weight 1} empty-cell empty-cell]
 	 [{:text " --- " :weight 2} empty-cell empty-cell]
-	 [{:text "-----" :weight 3} {:text "-----" :weight 3} empty-cell]])
+	 [{:text "-----" :weight 3} empty-cell empty-cell]])
 
 (def field-base-index (- (count field) 1))
 
 (defn print-field
-	[]
-	(map #(print %)
-	(for [line (range 0 (+ field-base-index 1))]
-		)))
+	[field]
+	(let [s (clojure.string/join "\n" (map clojure.string/join field))] (println s)))
 
 ; (defn print-field
 ; 	[]
@@ -33,63 +31,75 @@
 ; 		))
 
 (defn get-column
-	[column]
+	[field column]
 	(for [line (range 0 (+ field-base-index 1))]
 		((field line) column)))
 
 (defn get-top
-	[column]
+	[field column]
 	(first
-			(filter has-piece (get-column column))))
+			(filter has-piece (get-column field column))))
 
 (defn get-destiny-line
-	[column]
+	[field column]
 	(first
 		(for [line (range field-base-index -1 -1)
 			:when (is-empty ((field line) column))]
 			line)))
 
+(defn get-origin-line
+	[field column]
+	(first
+		(for [line (range 0 (+ field-base-index 1))
+			:when (has-piece ((field line) column))]
+			line)))
+
 (defn can-move
-	[origin destiny]
+	[field origin destiny]
 	(and
-		(not-nil? (get-top origin))
+		(not-nil? (get-top field origin))
 		(or
-			(nil? (get-top destiny))
-			(< (:weight (get-top origin)) (:weight (get-top destiny))))))
+			(nil? (get-top field destiny))
+			(< (:weight (get-top field origin)) (:weight (get-top field destiny))))))
 
-(defn teste
-	[origin destiny]
-	(assoc field (get-destiny-line destiny) 
-		(assoc (field (get-destiny-line destiny)) destiny (get-top origin)))
-)
+(defn update-destiny
+	[field origin destiny]
+	(assoc field (get-destiny-line field destiny) 
+		(assoc (field (get-destiny-line field destiny)) destiny (get-top field origin))))
 
-(defn teste2
-	[destiny]
-	(field (get-destiny-line destiny))
-)
+(defn update-origin
+	[field origin]
+	(assoc field (get-origin-line field origin) 
+		(assoc (field (get-origin-line field origin)) origin empty-cell)))
+
+(defn update-destiny-and-origin
+	[field origin destiny]
+	(update-origin
+		(update-destiny field origin destiny) origin))
 
 (defn move
-	[origin destiny]
-	(if (can-move origin destiny) 
-			; (assoc-in (field (get-destiny-line destiny)) destiny (get-top origin)))
+	[field origin destiny]
+	(if (can-move field origin destiny)
+		(update-destiny-and-origin field origin destiny)
+		(println "cannot move")))
 
-		(println "cannot move")
-	))
+(defn ask
+	[field moves]
+	(println "Origem: ")
+	(def origin (- (Integer. (read-line)) 1))
+	(println "Destino: ")
+	(def destiny (- (Integer. (read-line)) 1))
+
+	(let [field (move field origin destiny)]
+		(print-field field)
+		(println (str "Movimentos: " moves))
+		(ask field (inc moves)))
+)
 
 (defn -main
-  "I don't do a whole lot ... yet."
-  [& args]
-  (println ((field 0) 0))
-  (println (:text ((field 0) 0)))
-  (println (:weight ((field 0) 1)))
-  (println (get-column 1))
-  (println (get-top 0))
-  (println (can-move 0 1))
-  (println (can-move 1 2))
-  (println (get-column 0))
-  (println (get-destiny-line 1))
-  (println (teste2 1))
-  (println (teste 0 1))
-  (print-field)
-  ; (println (move 1 2))
-  )
+	"I don't do a whole lot ... yet."
+	[& args]
+
+	(print-field field)
+	(ask field 0)  
+)
