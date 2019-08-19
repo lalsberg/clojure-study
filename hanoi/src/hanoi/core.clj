@@ -83,17 +83,25 @@
 		(update-destiny-and-origin field origin destiny)
 		(println "cannot move")))
 
+(defn has-won 
+	[field]
+	(or
+		(empty? (filter is-empty (get-column field 1)))
+		(empty? (filter is-empty (get-column field 2)))))
+
 (defn ask
 	[field moves]
-	(println "Origem: ")
-	(def origin (- (Integer. (read-line)) 1))
-	(println "Destino: ")
-	(def destiny (- (Integer. (read-line)) 1))
+	(if (has-won field) 
+		(println (str "Parabens!! Movimentos:" moves))
+		(do 
+			(println "Origem: ")
+			(def origin (- (Integer. (read-line)) 1))
+			(println "Destino: ")
+			(def destiny (- (Integer. (read-line)) 1))  
 
-	(let [field (move field origin destiny)]
-		(print-field field)
-		(println (str "Movimentos: " moves))
-		(ask field (inc moves)))
+			(let [field (move field origin destiny)]
+				(print-field field)
+				(ask field (inc moves)))))
 )
 
 (defn -main
