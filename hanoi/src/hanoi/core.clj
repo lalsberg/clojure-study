@@ -16,7 +16,7 @@
 	((field line) column))
 
 (def get-cell)
-
+                                                         
 (def field 
 	[[{:text "      -      " :weight 1} empty-cell empty-cell]
 	 [{:text "     ---     " :weight 2} empty-cell empty-cell]
@@ -41,6 +41,15 @@
 
 (defn print-field
 	[field]
+		(println 
+			"  _   _                   _   _____                      \n"
+			"| | | |                 (_) |_   _|                     \n"
+			"| |_| | __ _ _ __   ___  _    | | _____      _____ _ __ \n"
+			"|  _  |/ _` | '_ \\ / _ \\| |   | |/ _ \\ \\ /\\ / / _ \\ '__|\n"
+			"| | | | (_| | | | | (_) | |   | | (_) \\ V  V /  __/ |   \n"
+			"\\_| |_/\\__,_|_| |_|\\___/|_|   \\_/\\___/ \\_/\\_/ \\___|_|   \n"
+			"                                                        \n"
+			"                                                        \n")
 		(dorun (map print (format-line (field 0))))
 		(println)
 		(dorun (map print (format-line (field 1))))
