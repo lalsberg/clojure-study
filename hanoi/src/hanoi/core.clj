@@ -111,7 +111,8 @@
 			(< (:weight (get-top field origin)) (:weight (get-top field destiny))))))
 
 (defn ask
-	[field moves]
+	([field] (ask field 0))
+	([field moves]
 	(if (has-won field) 
 		(println (str "Parabens!! Movimentos:" moves))
 		(do 
@@ -126,11 +127,11 @@
 
 			(if (can-move field origin destiny)
 				(ask (move field origin destiny) (inc moves))
-				(ask field moves)))))
+				(ask field moves))))))
 
 (defn -main
 	"I don't do a whole lot ... yet."
 	[& args]
 	(print-field field)
-	(ask field 0)  
+	(ask field)
 )
