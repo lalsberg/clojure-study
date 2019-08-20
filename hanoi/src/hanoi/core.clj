@@ -11,6 +11,12 @@
 
 (def is-empty (complement has-piece))
 
+(defn get-cell 
+	[field line column] 
+	((field line) column))
+
+(def get-cell)
+
 (def field 
 	[[{:text "      -      " :weight 1} empty-cell empty-cell]
 	 [{:text "     ---     " :weight 2} empty-cell empty-cell]
@@ -53,7 +59,7 @@
 (defn get-column
 	[field column]
 	(for [line (range 0 (+ field-base-index 1))]
-		((field line) column)))
+		(get-cell field line column)))
 
 (defn get-top
 	[field column]
@@ -64,14 +70,14 @@
 	[field column]
 	(first
 		(for [line (range field-base-index -1 -1)
-			:when (is-empty ((field line) column))]
+			:when (is-empty (get-cell field line column))]
 			line)))
 
 (defn get-origin-line
 	[field column]
 	(first
 		(for [line (range 0 (+ field-base-index 1))
-			:when (has-piece ((field line) column))]
+			:when (has-piece (get-cell field line column))]
 			line)))
 
 (defn update-destiny
