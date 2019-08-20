@@ -31,9 +31,8 @@
 
 (defn format-line
 	[line]
-	
-	(map get-text line)
-)
+	(map get-text line))
+
 (defn print-field
 	[field]
 		(dorun (map print (format-line (field 0))))
@@ -49,8 +48,7 @@
 		(dorun (map print (format-line (field 5))))
 		(println)
 		(dorun (map print (format-line (field 6))))
-		(println)
-		)
+		(println))
 
 (defn get-column
 	[field column]
@@ -76,15 +74,6 @@
 			:when (has-piece ((field line) column))]
 			line)))
 
-(defn can-move
-	[field origin destiny]
-	(and
-		(not-nil? (get-top field origin))
-		(not= origin destiny)
-		(or
-			(nil? (get-top field destiny))
-			(< (:weight (get-top field origin)) (:weight (get-top field destiny))))))
-
 (defn update-destiny
 	[field origin destiny]
 	(assoc field (get-destiny-line field destiny) 
@@ -102,10 +91,7 @@
 
 (defn move
 	[field origin destiny]
-	(if (can-move field origin destiny)
-		(update-destiny-and-origin field origin destiny)
-		(do (println "cannot move")
-			field)))
+		(update-destiny-and-origin field origin destiny))
 
 (defn has-won 
 	[field]
@@ -113,26 +99,38 @@
 		(empty? (filter is-empty (get-column field 1)))
 		(empty? (filter is-empty (get-column field 2)))))
 
+(defn can-move
+	[field origin destiny]
+	(and
+		(not= origin destiny)
+		(some #(= origin %) '(0 1 2))
+		(some #(= destiny %) '(0 1 2))
+		(not-nil? (get-top field origin))
+		(or
+			(nil? (get-top field destiny))
+			(< (:weight (get-top field origin)) (:weight (get-top field destiny))))))
+
 (defn ask
 	[field moves]
 	(if (has-won field) 
 		(println (str "Parabens!! Movimentos:" moves))
 		(do 
-			(println "Origem: ")
+			(clear-screen)
+			(print-field field)
+			(println "Origem (1,2,3): ")
 			(def origin (- (Integer. (read-line)) 1))
-			(println "Destino: ")
-			(def destiny (- (Integer. (read-line)) 1))  
+			(clear-screen)
+			(print-field field)
+			(println "Destino (1,2,3): ")
+			(def destiny (- (Integer. (read-line)) 1))
 
-			(let [field (move field origin destiny)]
-				(clear-screen)
-				(print-field field)
-				(ask field (inc moves)))))
-)
+			(if (can-move field origin destiny)
+				(ask (move field origin destiny) (inc moves))
+				(ask field moves)))))
 
 (defn -main
 	"I don't do a whole lot ... yet."
 	[& args]
-	(clear-screen)
 	(print-field field)
 	(ask field 0)  
 )
