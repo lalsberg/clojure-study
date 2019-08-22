@@ -10,4 +10,4 @@
 
 (def rotas 
 	(table/table-routes 
-		[["available-products" :get list-available-products :route-name :list-available-products]]))
+		[["/available-products" :get list-available-products :route-name :list-available-products]]))

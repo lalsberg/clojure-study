@@ -1,13 +1,13 @@
 (ns mystore.db.product
-	(:require [org.clojure/java.jdbc :as jdbc]))
+	(:require [clojure.java.jdbc :as jdbc]))
 
 (def connection-data {
 	:dbtype "mysql"
 	:dbname "mystore"
 	:user "root"
-	:password ""
+	:password "root"
 	:host "localhost"
-	:port "3306"
-})
+	:port 3306})
 
-(jdbc/query connection-data ["select * from product"])
+(defn findall []
+	(jdbc/query connection-data ["select * from product"]))
