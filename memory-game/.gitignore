@@ -10,7 +10,3 @@ pom.xml.asc
 /.nrepl-port
 .hgignore
 .hg/
-
-**/.idea/**
-mystore/mystore.iml
-memory-game/memory-game.iml
