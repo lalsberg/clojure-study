@@ -8,7 +8,8 @@
                  [io.pedestal/pedestal.route "0.5.7"]
                  [io.pedestal/pedestal.jetty "0.5.7"]
                  [org.clojure/data.json "0.2.6"]
-                 [org.slf4j/slf4j-simple "1.7.21"]]
+                 [org.slf4j/slf4j-simple "1.7.21"]
+                 [com.datomic/client-pro "0.9.37"]]
   :main memory-game.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}})

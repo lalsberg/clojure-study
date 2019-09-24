@@ -3,6 +3,7 @@
   (:require [io.pedestal.http.route.definition.table :as table]
             [io.pedestal.http.body-params :as body-params]
             [memory-game.controllers.room :as room-controller]
+            [memory-game.datomic.dao :as dao]
             [clojure.data.json :as json]))
 
 (defn create-room [request]
@@ -17,7 +18,7 @@
 
 (defn list-rooms [request]
   {:status 200
-   :body (room-controller/list-rooms)
+   :body (dao/list-rooms)
    :headers {"Content-Type" "application/json"}})
 
 (def routes
